@@ -1,7 +1,25 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	client "github.com/mikejeuga/ghi-comments"
+	"log"
+	"strconv"
+)
 
 func main() {
-	fmt.Println("Make Comments")
+	config := client.NewConfig()
+	ghClient := client.NewGHClient(config)
+	issues, err := ghClient.GetIssues()
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, issue := range issues {
+		fmt.Println(strconv.Itoa(issue.Number) + " - " + issue.Titles)
+	}
+
+	err = ghClient.CommentOnIssue(issues[1].Number, "A brand new comment")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
